@@ -62,7 +62,7 @@ stages:
   jobs:
   - deployment: Deploy
     displayName: Deploy
-    environment: $(functionAppName)
+    #environment: $(functionAppName)
     pool:
       vmImage: $(vmImageName)
 
