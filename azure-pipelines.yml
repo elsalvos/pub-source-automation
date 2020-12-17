@@ -8,7 +8,7 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'ddac44a0-de74-4df0-a00f-2351a427aea0'
+  azureSubscription: 'a7e34ff7-2ba4-4ae0-b785-911c8c728dbe'
 
   # Function app name
   functionAppName: 'PSFunctionsSantana'
@@ -69,7 +69,6 @@ stages:
     strategy:
       runOnce:
         deploy:
-
           steps:
           - task: AzureFunctionApp@1
             displayName: 'Azure functions app deploy'
