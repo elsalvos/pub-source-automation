@@ -32,7 +32,7 @@ stages:
     steps:
     - powershell: |
         if (Test-Path "extensions.csproj") {
-            dotnet build extensions.csproj --output ./$(workingDirectory)/bin
+            dotnet build extensions.csproj --output ./$(functionAppName)/bin
         }
       displayName: 'Build extensions'
 
@@ -74,9 +74,9 @@ stages:
           - task: AzureFunctionApp@1
             displayName: 'Azure functions app deploy'
             inputs:
-              azureSubscription: 'DevOpsDeploymentSP-Prod'
+              azureSubscription: '$(azureSubscription)' #'DevOpsDeploymentSP-Prod'
               appType: 'functionApp'
               appName: '$(functionAppName)'
-              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              package: '$(Pipeline.Workspace)/drop/$(functionAppName).zip'
               deploymentMethod: 'auto'
 
