@@ -42,7 +42,7 @@ stages:
         rootFolderOrFile: $(workingDirectory)
         includeRootFolder: false
         archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(functionAppName).zip
         replaceExistingArchive: true
 
 #    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
