@@ -256,8 +256,8 @@
             "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')))]"
         },
         "pip-ip": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).IpAddress]"
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')))]"
         },
         "pip-fqdn": {
             "type": "string",
