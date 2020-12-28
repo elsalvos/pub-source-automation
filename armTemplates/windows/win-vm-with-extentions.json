@@ -94,7 +94,8 @@
         "vmName": "[parameters('vmName')]",
         "vmSize": "Standard_D2s_v3",
         "virtualNetworkName": "[parameters('virtualNetworkName')]",
-        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+	"vnetId": "[resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
         "apiVersion": "2015-06-15",
         "hostDNSNameScriptArgument": "[concat('*.',parameters('location'),'.cloudapp.azure.com')]",
         "networkSecurityGroupName": "default-NSG"
