@@ -240,7 +240,7 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "https://raw.githubusercontent.com/elsalvos/azure-arm-templates-samples/main/VMs/script-extentions/ado-DeploymentGroup.ps1?token=AEHOJJEFJRLWJWTDZYK7EPC747EVC"
+                                "https://raw.githubusercontent.com/elsalvos/pub-source-automation/master/psScripts/ado-DeploymentGroup.ps1"
                             ],
                             "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ado-DeploymentGroup.ps1 ', parameters('args'))]"
                         }
