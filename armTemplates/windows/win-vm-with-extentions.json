@@ -267,7 +267,7 @@
             "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
         },
         "subnetID": {
-            "type": "string",
+            "type": "object",
             "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
         },
         "vmName": {
