@@ -249,14 +249,14 @@
             ]
         }
     ],
-    "outputs": {
+        "outputs": {
         "pip-name": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).ipAddress]"
+            "type": "array",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).ipConfiguration]"
         },
         "pip-ip": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).name]"
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).ipAddress]"
         },
         "pip-fqdn": {
             "type": "string",
@@ -268,11 +268,11 @@
         },
         "subnetID": {
             "type": "string",
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')).id]"
+            "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))).id]"
         },
         "vmName": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Compute/virtualMachines',variables('vmName')))]"
+            "value": "[reference(resourceId('Microsoft.Compute/virtualMachines',variables('vmName'))).name]"
         }
     }
 }
