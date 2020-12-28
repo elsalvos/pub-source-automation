@@ -1,0 +1,278 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+		"args": {
+			"defaultValue": "-accountUrl https://dev.azure.com/orgName/ -projectName ProjectName -deploymentGroupName groupName -personalAccessToken toke -runAsAutoLogon false",
+			"type": "string"
+		},
+        "adminUsername": {
+            "defaultValue": "username",
+            "type": "String",
+            "metadata": {
+                "description": "Username for the Virtual Machine."
+            }
+        },
+        "adminPassword": {
+            "defaultValue": "pwd",
+            "type": "SecureString",
+            "metadata": {
+                "description": "Password for the Virtual Machine."
+            }
+        },
+        "dnsLabelPrefix": {
+            "defaultValue": "fqdn-sufixName(vmName)",
+            "type": "String",
+            "metadata": {
+                "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+            }
+        },
+        "windowsOSVersion": {
+            "defaultValue": "2012-R2-Datacenter",
+            "allowedValues": [
+                "2008-R2-SP1",
+                "2012-Datacenter",
+                "2012-R2-Datacenter"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version. Allowed values: 2008-R2-SP1, 2012-Datacenter, 2012-R2-Datacenter."
+            }
+        },
+        "vmName": {
+            "defaultValue": "MyVMName",
+            "type": "String",
+            "metadata": {
+                "description": "The name for the VM."
+            }
+        },
+        "nicName": {
+            "defaultValue": "myVMNic",
+            "type": "String",
+            "metadata": {
+                "description": "The name for the VM's NIC."
+            }
+        },
+        "virtualNetworkName": {
+            "defaultValue": "MyVNET",
+            "type": "String",
+            "metadata": {
+                "description": "The name for the VM's VNET."
+            }
+        },
+        "publicIPAddressName": {
+            "defaultValue": "myPublicIP",
+            "type": "String",
+            "metadata": {
+                "description": "The name for the VM's public IP."
+            }
+        },
+        "subnetName": {
+            "defaultValue": "Subnet",
+            "type": "String",
+            "metadata": {
+                "description": "The name for the VM's Subnet."
+            }
+        },
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "String",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "variables": {
+        "imagePublisher": "MicrosoftWindowsServer",
+        "imageOffer": "WindowsServer",
+        "nicName": "[parameters('nicName')]",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetName": "[parameters('subnetName')]",
+        "subnetPrefix": "10.0.0.0/24",
+        "publicIPAddressName": "[parameters('publicIPAddressName')]",
+        "publicIPAddressType": "Dynamic",
+        "vmName": "[parameters('vmName')]",
+        "vmSize": "Standard_D2s_v3",
+        "virtualNetworkName": "[parameters('virtualNetworkName')]",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+        "apiVersion": "2015-06-15",
+        "hostDNSNameScriptArgument": "[concat('*.',parameters('location'),'.cloudapp.azure.com')]",
+        "networkSecurityGroupName": "default-NSG"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2015-06-15",
+            "name": "[variables('publicIPAddressName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2019-08-01",
+            "name": "[variables('networkSecurityGroupName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-3389",
+                        "properties": {
+                            "priority": 1000,
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "destinationPortRange": "3389",
+                            "protocol": "Tcp",
+                            "sourceAddressPrefix": "*",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2015-06-15",
+            "name": "[variables('virtualNetworkName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnetPrefix')]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2015-06-15",
+            "name": "[variables('nicName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2016-04-30-preview",
+            "name": "[variables('vmName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[variables('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('vmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[parameters('windowsOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                        }
+                    ]
+                }
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "apiVersion": "2018-06-01",
+                    "name": "[concat(variables('vmName'),'/ado-dg-CustomScriptExtension')]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.10",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "https://raw.githubusercontent.com/elsalvos/azure-arm-templates-samples/main/VMs/script-extentions/ado-DeploymentGroup.ps1?token=AEHOJJEFJRLWJWTDZYK7EPC747EVC"
+                            ],
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ado-DeploymentGroup.ps1 ', parameters('args'))]"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {
+        "pip-name": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).ipAddress]"
+        },
+        "pip-ip": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).name]"
+        },
+        "pip-fqdn": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).dnsSettings.fqdn]"
+        },
+        "subnetName": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+        },
+        "subnetID": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')).id]"
+        },
+        "vmName": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Compute/virtualMachines',variables('vmName')))]"
+        }
+    }
+}
