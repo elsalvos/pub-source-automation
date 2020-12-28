@@ -256,7 +256,7 @@
         },
         "pip-ip": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).ipAddress]"
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).IpAddress]"
         },
         "pip-fqdn": {
             "type": "string",
@@ -268,10 +268,10 @@
         },
         "subnetID": {
             "type": "string",
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName')).id]"
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
         },
         "vmName": {
-            "type": "array",
+            "type": "object",
             "value": "[reference(resourceId('Microsoft.Compute/virtualMachines', variables('vmName')))]"
         }
     }
