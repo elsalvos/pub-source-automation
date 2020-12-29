@@ -251,27 +251,27 @@
         }
     ],
         "outputs": {
-        "pip-name": {
-            "type": "object",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')))]"
-        },
         "pip-ip": {
-            "type": "object",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')))]"
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).ipAddress]"
         },
         "pip-fqdn": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).dnsSettings.fqdn]"
         },
-        "subnetName": {
+        "ComputerName": {
             "type": "string",
-            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+            "value": "[reference(resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))).osProfile.computerName]"
         },
         "subnetID": {
             "type": "string",
             "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
         },
-        "vmName": {
+	"pip-object": {
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')))]"
+        },
+        "vm-object": {
             "type": "object",
             "value": "[reference(resourceId('Microsoft.Compute/virtualMachines', variables('vmName')))]"
         }
