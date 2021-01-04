@@ -93,8 +93,8 @@ stages:
                 Get-Location
                 
                 write-host "get json files `n"
-                get-childitem -Recurse | select basename,fullname
-                ls
+                get-childitem *.json -Recurse | select basename,fullname
+                
                 write-host "Done running script `n"
               errorActionPreference: 'silentlyContinue'
               ignoreLASTEXITCODE: true
