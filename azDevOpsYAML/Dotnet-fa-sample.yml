@@ -9,7 +9,7 @@ trigger:
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'DevOpsDeploymentSP-Prod' #'a7e34ff7-2ba4-4ae0-b785-911c8c728dbe'
-
+  ResourceGroupName: 'santana-uw2-rg-d'
   # Function app name
   functionAppName: 'santaFA-uw2-fa-d'
 
