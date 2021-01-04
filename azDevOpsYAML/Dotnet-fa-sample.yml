@@ -94,11 +94,11 @@ stages:
                 
                 write-host "get json files `n"
                 get-childitem -Recurse | select basename,fullname
-                
+                ls
                 write-host "Done running script `n"
               errorActionPreference: 'silentlyContinue'
               ignoreLASTEXITCODE: true
-              workingDirectory: '$(System.DefaultWorkingDirectory)'
+              workingDirectory: '$(Pipeline.Workspace)'
 
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
@@ -109,7 +109,7 @@ stages:
               resourceGroupName: '$(ResourceGroupName)'
               location: '$(location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.DefaultWorkingDirectory)\**\*.json'
+              csmFile: '$(Pipeline.Workspace)/**/*.json'
               overrideParameters: '-appName $(functionAppname) -aspName $(aspName) -sku $(aspSKU) -workerSize $(aspWorkerSize) -storageAccountType "Standard_LRS" -location "West US 2"'
               deploymentMode: 'Incremental'
               deploymentOutputs: 'armTemplateOutput'
