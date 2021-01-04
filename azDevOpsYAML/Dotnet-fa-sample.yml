@@ -76,7 +76,15 @@ stages:
       runOnce:
         deploy:
           steps:
-
+          
+          - task: PowerShell@2
+            displayName: 'Find json files'
+            inputs:
+              targetType: 'inline'
+              script: |
+                Get-Location
+                write-host "get PS scripts"
+                get-childitem *.json -Recurse | select basename,fullname
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: 'Resource Group'
@@ -86,7 +94,7 @@ stages:
               resourceGroupName: '$(ResourceGroupName)'
               location: '$(location)'
               templateLocation: 'Linked artifact'
-              csmFile: 'armTemplates/wa-fa/fa-deployment.json'
+              csmFile: '**/armTemplates/wa-fa/fa-deploy.json'
               overrideParameters: '-appName $(functionAppname) -aspName $(aspName) -sku $(aspSKU) -workerSize $(aspWorkerSize) -storageAccountType "Standard_LRS" -location "West US 2"'
               deploymentMode: 'Incremental'
               deploymentOutputs: 'armTemplateOutput'
