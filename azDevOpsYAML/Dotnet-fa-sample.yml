@@ -15,8 +15,8 @@ variables:
 
   # App Plan Name
   aspName: 'santana-uw2-asp-d'
-  aspTier: ''
-  aspSKU: ''
+  aspWorkerSize: '1'
+  aspSKU: 'S1'
 
   # Agent VM image name
   vmImageName: 'vs2017-win2016'
@@ -85,7 +85,8 @@ stages:
               resourceGroupName: '$(ResourceGroupName)'
               location: '$(location)'
               templateLocation: 'Linked artifact'
-              csmFile: '**\*.json'
+              csmFile: 'armTemplates/wa-fa/fa-deployment.json'
+              overrideParameters: '-appName $(functionAppname) -aspName $(aspName) -sku $(aspSKU) -workerSize $(aspWorkerSize) -storageAccountType "Standard_LRS" -location "West US 2"'
               deploymentMode: 'Incremental'
               deploymentOutputs: 'armTemplateOutput'
 
