@@ -89,9 +89,14 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
+                write-host "Getting current location `n"
                 Get-Location
-                write-host "get PS scripts"
+
+                write-host "get json files `n"
                 get-childitem *.json -Recurse | select basename,fullname
+
+                write-host "Done running script `n"
+
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: 'Resource Group'
