@@ -101,7 +101,7 @@ stages:
               resourceGroupName: '$(ResourceGroupName)'
               location: '$(location)'
               templateLocation: 'Linked artifact'
-              csmFile: '**/armTemplates/wa-fa/fa-deploy.json'
+              csmFile: '**/fa-deploy.json'
               overrideParameters: '-appName $(functionAppname) -aspName $(aspName) -sku $(aspSKU) -workerSize $(aspWorkerSize) -storageAccountType "Standard_LRS" -location "West US 2"'
               deploymentMode: 'Incremental'
               deploymentOutputs: 'armTemplateOutput'
