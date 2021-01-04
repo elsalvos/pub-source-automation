@@ -4,14 +4,19 @@
 # https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-powershell
 
 trigger:
-- master
+- none
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'DevOpsDeploymentSP-Prod' #'a7e34ff7-2ba4-4ae0-b785-911c8c728dbe'
 
   # Function app name
-  functionAppName: 'PSFunctionsSantana'
+  functionAppName: 'santaFA-uw2-fa-d'
+
+  # App Plan Name
+  aspName: 'santana-uw2-asp-d'
+  aspTier: ''
+  aspSKU: ''
 
   # Agent VM image name
   vmImageName: 'vs2017-win2016'
@@ -70,7 +75,20 @@ stages:
       runOnce:
         deploy:
           steps:
-          
+
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'DevOpsDeploymentSP-Prod'
+              subscriptionId: 'a7e34ff7-2ba4-4ae0-b785-911c8c728dbe'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: '$(ResourceGroupName)'
+              location: '$(location)'
+              templateLocation: 'Linked artifact'
+              csmFile: '**\*.json'
+              deploymentMode: 'Incremental'
+              deploymentOutputs: 'armTemplateOutput'
+
           - task: AzureFunctionApp@1
             displayName: 'Azure functions app deploy'
             inputs:
