@@ -58,14 +58,14 @@ stages:
         archiveFile: $(Build.ArtifactStagingDirectory)/$(functionAppName).zip
         replaceExistingArchive: true
 
-#    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-#      artifact: drop
-
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
+
+#    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+#      artifact: drop
 
 - stage: Deploy
   displayName: Deploy stage
@@ -93,7 +93,7 @@ stages:
                 Get-Location
 
                 write-host "get json files `n"
-                get-childitem *.json -Recurse | select basename,fullname
+                get-childitem -Recurse | select basename,fullname
 
                 write-host "Done running script `n"
 
@@ -106,7 +106,8 @@ stages:
               resourceGroupName: '$(ResourceGroupName)'
               location: '$(location)'
               templateLocation: 'Linked artifact'
-              csmFile: '**/fa-deploy.json'
+              csmFile: '**\*.json'
+              #'**/fa-deploy.json'
               overrideParameters: '-appName $(functionAppname) -aspName $(aspName) -sku $(aspSKU) -workerSize $(aspWorkerSize) -storageAccountType "Standard_LRS" -location "West US 2"'
               deploymentMode: 'Incremental'
               deploymentOutputs: 'armTemplateOutput'
