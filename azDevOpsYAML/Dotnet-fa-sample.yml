@@ -42,6 +42,13 @@ stages:
         }
       displayName: 'Build extensions'
 
+    - task: CopyFiles@2
+      displayName: 'copy template to use'
+      inputs:
+        SourceFolder: 'armTemplates/wa-fa'
+        Contents: 'fa-asp-deploy.json'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+    
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
