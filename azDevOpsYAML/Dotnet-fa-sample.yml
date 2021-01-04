@@ -12,7 +12,7 @@ variables:
   ResourceGroupName: 'santana-uw2-rg-d'
   location: 'west us 2'
   # Function app name
-  functionAppName: 'santaFA-uw2-fa-d'
+  functionAppName: 'santafa-uw2-fa-d'
 
   # App Plan Name
   aspName: 'santana-uw2-asp-d'
