@@ -8,6 +8,13 @@
             "metadata": {
                 "description": "description"
             }
+        },
+        "vnet_addressPrefix": {
+            "type": "string",
+            "defaultValue": "10.200.0.0/22",
+            "metadata": {
+                "description": "description"
+            }
         }
     },
     "functions": [
@@ -26,20 +33,20 @@
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "10.0.0.0/16"
+                        "[parameters('vnet_addressPrefix')]"
                     ]
                 },
                 "subnets": [
                     {
                         "name": "Subnet-1",
                         "properties": {
-                            "addressPrefix": "10.0.0.0/24"
+                            "addressPrefix": "10.200.0.0/24"
                         }
                     },
                     {
                         "name": "Subnet-2",
                         "properties": {
-                            "addressPrefix": "10.0.1.0/24"
+                            "addressPrefix": "10.200.1.0/24"
                         }
                     }
                 ]
