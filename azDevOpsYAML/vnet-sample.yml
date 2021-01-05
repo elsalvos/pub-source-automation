@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+name: 'vnet arm template deployment'
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+  #demands: 'azure-cli'
+
+steps:
+- task: azureresourcegroup@1
+  inputs:
+    ConnectedServiceName: 'Santa Ana Production (a7e34ff7-2ba4-4ae0-b785-911c8c728dbe)'
+    ResourceGroupName: 'vnets-uw2-rg-d'
+    location: 'West US 2'
+    Tags: '{costCenter:"myCost1234",appName:"newVNET"}'
+    Lock: false
+
+- script: dir create-vnet.json /s
+
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'ARM template - deploy VNET'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'DevOpsDeploymentSP-Prod'
+    subscriptionId: 'a7e34ff7-2ba4-4ae0-b785-911c8c728dbe'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'vnets-uw2-rg-d'
+    location: 'West US 2'
+    templateLocation: 'Linked artifact'
+    csmFile: '**\templates\create-vnet.json'
+    deploymentMode: 'Incremental'
+    deploymentName: 'create-vnet'
+    deploymentOutputs: 'arm_vnet'
+
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
