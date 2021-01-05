@@ -31,7 +31,7 @@ steps:
     resourceGroupName: 'vnets-uw2-rg-d'
     location: 'West US 2'
     templateLocation: 'Linked artifact'
-    csmFile: '**\templates\create-vnet.json'
+    csmFile: '**/armTemplates/network/create-vnet.json'
     deploymentMode: 'Incremental'
     deploymentName: 'create-vnet'
     deploymentOutputs: 'arm_vnet'
